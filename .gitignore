@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+discord/discord
 
 # Test binary, built with `go test -c`
 *.test
