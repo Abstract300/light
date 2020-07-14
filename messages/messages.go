@@ -1,6 +1,9 @@
 package messages
 
 import (
+	"log"
+	"time"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -12,8 +15,8 @@ type Message struct {
 	ID              string
 	ChannelID       string
 	GuildID         string
-	Timestamp       discordgo.Timestamp
-	EditedTimestamp discordgo.Timestamp
+	Timestamp       string
+	EditedTimestamp string
 	MessageAuthor   Author
 }
 
@@ -34,14 +37,19 @@ func (msg MessageState) MessageCreateEvent(s *discordgo.Session, m *discordgo.Me
 		ID:       m.Author.ID,
 		Username: m.Author.Username,
 	}
+
 	userMsg := Message{
-		ID:              m.ID,
-		ChannelID:       m.ChannelID,
-		GuildID:         m.GuildID,
-		Timestamp:       m.Timestamp,
-		EditedTimestamp: m.EditedTimestamp,
-		MessageAuthor:   user,
+		ID:            m.ID,
+		ChannelID:     m.ChannelID,
+		GuildID:       m.GuildID,
+		MessageAuthor: user,
 	}
+
+	discordMsgTime, err := m.Timestamp.Parse()
+	if err != nil {
+		log.Println(err)
+	}
+	userMsg.Timestamp = discordMsgTime.Format(time.RFC1123Z)
 
 	msg.Store.StoreChannelMessage(userMsg)
 }

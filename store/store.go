@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/abstract300/light/messages"
 	_ "github.com/lib/pq"
 )
 
@@ -24,14 +23,4 @@ func NewStore(dbinfo string) *Store {
 	}
 
 	return store
-}
-
-func (st *Store) StoreChannelMessage(msg messages.Message) error {
-	_, err := st.DB.Exec("INSERT INTO messageauthor(id, username) values($1, $2)", msg.MessageAuthor.ID, msg.MessageAuthor.Username)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	return err
 }
