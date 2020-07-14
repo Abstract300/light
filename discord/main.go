@@ -8,6 +8,8 @@ import (
 	"syscall"
 
 	"github.com/Necroforger/dgrouter/exrouter"
+	"github.com/abstract300/light/messages"
+	"github.com/abstract300/light/store"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -15,6 +17,7 @@ import (
 var (
 	Prefix *string
 	Token  string
+	dbinfo string
 
 	// New Router
 	dg     discordgo.Session
@@ -24,16 +27,22 @@ var (
 func init() {
 	flag.StringVar(&Token, "t", "", "Bot Token")
 	Prefix = flag.String("p", "!", "bot prefix")
+	flag.StringVar(&dbinfo, "db", "", "db info")
 	flag.Parse()
 }
 
 func main() {
+	db := store.NewStore(dbinfo)
+	msgState := messages.NewMessageState(db)
 
 	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
+
+	// Register bot stats.
+	dg.AddHandler(msgState.MessageCreateEvent)
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(func(_ *discordgo.Session, m *discordgo.MessageCreate) {

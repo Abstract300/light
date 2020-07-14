@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Necroforger/dgrouter/exrouter"
+import (
+	"github.com/Necroforger/dgrouter/exrouter"
+)
 
 func init() {
 	router = exrouter.New()
